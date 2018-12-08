@@ -85,12 +85,6 @@ var SpotifyHelper = class SpotifyHelper {
             var numberOfTimesUpdated = 0;
 
             setInterval(() => {
-                
-                // console.log(
-                //     'Time left: ' +
-                //     Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
-                //     ' seconds left!'
-                // );
 
                 // OK, we need to refresh the token. Stop printing and refresh.
                 if (++numberOfTimesUpdated > 3500) {
@@ -118,7 +112,7 @@ var SpotifyHelper = class SpotifyHelper {
 
     async getAlbum() {
         let listAlbum = [];
-        await spotifyApi.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE', { limit: 12, offset: 0 }).then(
+        await spotifyApi.getArtistAlbums('1dfeR4HaWDbWqFHLkxsg1d', { limit: 50, offset: 0 }).then(
             (data) => {
                 for (let album of data.body.items)
                     listAlbum.push(album.name);
