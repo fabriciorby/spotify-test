@@ -1,12 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var spotifyApi = require('../spotify');
+var spotifyApi = require('../spotifyConfig')
 var SpotifyHelper = require('../spotifyHelper');
 var spotifyHelper = new SpotifyHelper();
 
 /* GET home page. */
-router.get('/', (req, res, next) => {
-  var authURL = spotifyApi.authURL;
+router.get('/', async (req, res, next) => {
+  spotifyApi.setRedirectURI(req.protocol + '://' + req.get('host') + '/callback');
+  let authURL = await spotifyHelper.getAuthURL();
   res.render('logar', { title: 'Teste' , spotifyAuthURL: authURL});
 });
 

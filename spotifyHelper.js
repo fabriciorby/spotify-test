@@ -1,8 +1,33 @@
-var spotifyApi = require('./spotify');
+var spotifyApi = require('./spotifyConfig');
 
 var SpotifyHelper = class SpotifyHelper {
     constructor(spotifyApi) {
         this.spotifyApi = spotifyApi;
+        this.state = 'some-state-of-my-choice';
+        this.scopes = [
+            'user-modify-playback-state',
+            'user-read-currently-playing',
+            'user-read-playback-state',
+            'user-library-modify',
+            'user-library-read',
+            'streaming',
+            'app-remote-control',
+            'user-read-email',
+            'user-read-private',
+            'user-read-birthdate',
+            'user-follow-read',
+            'user-follow-modify',
+            'playlist-read-private',
+            'playlist-read-collaborative',
+            'playlist-modify-public',
+            'playlist-modify-private',
+            'user-read-recently-played',
+            'user-top-read'
+        ];
+    }
+
+    async getAuthURL() {
+        return await spotifyApi.createAuthorizeURL(this.scopes, this.state);
     }
 
     /**
@@ -95,17 +120,13 @@ var SpotifyHelper = class SpotifyHelper {
         let listAlbum = [];
         await spotifyApi.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE', { limit: 12, offset: 0 }).then(
             (data) => {
-
-            for (let album of data.body.items) {
-                listAlbum.push(album.name);
-            }
-
+                for (let album of data.body.items)
+                    listAlbum.push(album.name);
             },
             (err) => {
             console.error(err);
             }
         );
-        console.log(listAlbum);
         return listAlbum;
     }
 };
