@@ -3,4 +3,4 @@ extends index
 block content
   div(class='grid-container')
     each item in list
-        div(class='grid-item')= item
+        div(class='grid-item' id=item[0])= item[1]

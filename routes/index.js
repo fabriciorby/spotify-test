@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var spotifyApi = require('../spotifyConfig')
-var SpotifyHelper = require('../spotifyHelper');
-var spotifyHelper = new SpotifyHelper();
+const express = require('express');
+const router = express.Router();
+const spotifyApi = require('../spotifyConfig')
+const SpotifyHelper = require('../spotifyHelper');
+const spotifyHelper = new SpotifyHelper();
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
@@ -13,7 +13,7 @@ router.get('/', async (req, res, next) => {
 
 //chamado após a autenticação Spotify apenas para pegar o code
 router.get('/callback', async (req, res, next) => {
-  var code = req.query.code;
+  let code = req.query.code;
   if (!spotifyApi.getRefreshToken())
     await spotifyHelper.getRefreshToken(code);
   res.redirect('conteudo');
@@ -22,6 +22,7 @@ router.get('/callback', async (req, res, next) => {
 //finalmente redirecionado para cá após o login
 router.get('/conteudo', async (req,res,next) => {
   let listAlbum = await spotifyHelper.getAlbum();
+  listAlbum = Array.from(listAlbum.entries());
   res.render('conteudo', { title: 'Teste', list: listAlbum});
 });
 
