@@ -1,4 +1,4 @@
-var spotifyApi = require('./spotifyConfig');
+const spotifyApi = require('./spotifyConfig');
 
 var SpotifyHelper = class SpotifyHelper {
     constructor(spotifyApi) {
@@ -34,27 +34,40 @@ var SpotifyHelper = class SpotifyHelper {
      * Set the credentials given on Spotify's My Applications page.
      * https://developer.spotify.com/my-applications
      */
+    async getUserInfo() {
+        try {
+            let data = await spotifyApi.getMe();
+            let user = {};
+            user.name = data.body.display_name;
+            user.email = data.body.email;
+            user.id = data.body.id;
+            return user;
+        } catch (e) {
+            console.log('Error while getting user info: ' + e)
+        }
+    }
+
     async getAccessToken() {
         // Retrieve an access token
         await spotifyApi.clientCredentialsGrant().then(
-        (data) => {
-            console.log(data);
-            console.log('The access token expires in ' + data.body['expires_in']);
-            console.log('The access token is ' + data.body['access_token']);
-        
-            // Save the access token so that it's used in future calls
-            spotifyApi.setAccessToken(data.body['access_token']);
-        },
-        (err) => {
-            console.log(
-            'Something went wrong when retrieving an access token',
-            err.message
-            );
-        }
+            (data) => {
+                console.log(data);
+                console.log('The access token expires in ' + data.body['expires_in']);
+                console.log('The access token is ' + data.body['access_token']);
+
+                // Save the access token so that it's used in future calls
+                spotifyApi.setAccessToken(data.body['access_token']);
+            },
+            (err) => {
+                console.log(
+                    'Something went wrong when retrieving an access token',
+                    err.message
+                );
+            }
         );
     };
 
-    async getRefreshToken(authorizationCode){
+    async getRefreshToken(authorizationCode) {
         // When our access token will expire
         var tokenExpirationEpoch;
         // First retrieve an access token
@@ -66,62 +79,117 @@ var SpotifyHelper = class SpotifyHelper {
 
                 // Save the amount of seconds until the access token expired
                 tokenExpirationEpoch =
-                new Date().getTime() / 1000 + data.body['expires_in'];
+                    new Date().getTime() / 1000 + data.body['expires_in'];
                 console.log(
-                'Retrieved token. It expires in ' +
+                    'Retrieved token. It expires in ' +
                     Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
                     ' seconds!'
                 );
             },
             (err) => {
                 console.log(
-                'Something went wrong when retrieving the access token!',
-                err.message
+                    'Something went wrong when retrieving the access token!',
+                    err.message
                 );
             }
-            );
+        );
 
-            // Continually print out the time left until the token expires..
-            var numberOfTimesUpdated = 0;
+        // Continually print out the time left until the token expires..
+        var numberOfTimesUpdated = 0;
 
-            setInterval(() => {
+        setInterval(() => {
 
-                // OK, we need to refresh the token. Stop printing and refresh.
-                if (++numberOfTimesUpdated > 3500) {
-                    clearInterval(this);
+            // OK, we need to refresh the token. Stop printing and refresh.
+            if (++numberOfTimesUpdated > 3500) {
+                clearInterval(this);
 
-                    // Refresh token and print the new time to expiration.
-                    spotifyApi.refreshAccessToken().then(
-                    function(data) {
+                // Refresh token and print the new time to expiration.
+                spotifyApi.refreshAccessToken().then(
+                    function (data) {
                         tokenExpirationEpoch =
-                        new Date().getTime() / 1000 + data.body['expires_in'];
+                            new Date().getTime() / 1000 + data.body['expires_in'];
                         console.log(
-                        'Refreshed token. It now expires in ' +
+                            'Refreshed token. It now expires in ' +
                             Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
                             ' seconds!'
                         );
                     },
-                    function(err) {
+                    function (err) {
                         console.log('Could not refresh the token!', err.message);
                     }
-                    );
-                    numberOfTimesUpdated = 0;
-                }
-            }, 1000);
+                );
+                numberOfTimesUpdated = 0;
+            }
+        }, 1000);
     }
 
     async getAlbum() {
-        let listAlbum = [];
+        let listAlbum = { data: [] };
         await spotifyApi.getArtistAlbums('1dfeR4HaWDbWqFHLkxsg1d', { limit: 50, offset: 0 }).then(
             (data) => {
-                for (let album of data.body.items)
-                    listAlbum.push(album.name);
+                let firstPage = data.body.items;
+                firstPage.forEach(function (data, index) {
+                    listAlbum['data'].push(
+                        { 'id': data.id, 'name': data.name}
+                    );
+                    //debug
+                    console.log(index + ': ' + data.name);
+                });
             },
             (err) => {
-            console.error(err);
+                console.error(err);
             }
         );
         return listAlbum;
+    }
+
+    async getAlbumTracks() {
+        await spotifyApi.getAlbumTracks('41MnTivkwTO3UUJ8DrqEJJ', { limit: 5, offset: 1 }).then(
+            (data) => {
+                console.log(data.body);
+            }, function (err) {
+                console.log('Something went wrong!', err);
+            });
+    }
+
+    //tipo -> artist, track, album
+    async searchData(tipo, nome) {
+        try {
+            let firstPage = {};
+            let total;
+            let dataInfo = { data: [] };
+            let data = await spotifyApi.search(nome, [tipo], { limit: 50, offset: 0 });
+
+            switch (tipo) {
+                case 'album':
+                    firstPage = data.body.albums.items;
+                    total = data.body.albums.total;
+                    break;
+                case 'track':
+                    firstPage = data.body.tracks.items;
+                    total = data.body.tracks.total;
+                    break;
+                case 'artist':
+                    firstPage = data.body.artists.items;
+                    total = data.body.artists.total;
+                    break;
+                default:
+                // code block
+            }
+
+            firstPage.forEach(function (data, index) {
+                dataInfo['data'].push(
+                    { 'id': data.id, 'name': data.name}
+                );
+                console.log(index + ': ' + data.name);
+            });
+
+            dataInfo.total = total;
+
+            return dataInfo
+        } catch (e) {
+            console.log('Error while getting data info: ' + e)
+        }
     }
 };
 

@@ -1,4 +1,10 @@
-extends index
+extends layout
 
-block logar
-  button(onclick = "location.href='" + spotifyAuthURL + "'") click
+block header
+  header#header
+    h1= title
+
+block content
+  section#section
+    p Welcome to #{title}
+    button(onclick = "location.href='" + spotifyAuthURL + "'") click

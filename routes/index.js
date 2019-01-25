@@ -1,8 +1,10 @@
-var express = require('express');
-var router = express.Router();
-var spotifyApi = require('../spotifyConfig')
-var SpotifyHelper = require('../spotifyHelper');
-var spotifyHelper = new SpotifyHelper();
+const express = require('express');
+const router = express.Router();
+const spotifyApi = require('../spotifyConfig')
+const SpotifyHelper = require('../spotifyHelper');
+const spotifyHelper = new SpotifyHelper();
+
+let userInfo = {};
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
@@ -13,16 +15,29 @@ router.get('/', async (req, res, next) => {
 
 //chamado após a autenticação Spotify apenas para pegar o code
 router.get('/callback', async (req, res, next) => {
-  var code = req.query.code;
+  let code = req.query.code;
   if (!spotifyApi.getRefreshToken())
     await spotifyHelper.getRefreshToken(code);
-  res.redirect('conteudo');
+  res.redirect('index');
+});
+
+//finalmente redirecionado para cá após o login
+router.get('/index', async (req,res,next) => {
+  userInfo = await spotifyHelper.getUserInfo();
+  console.log(userInfo);
+  res.render('index', { title: 'Teste', user: userInfo});
 });
 
 //finalmente redirecionado para cá após o login
 router.get('/conteudo', async (req,res,next) => {
   let listAlbum = await spotifyHelper.getAlbum();
-  res.render('conteudo', { title: 'Teste', list: listAlbum});
+  res.render('conteudo', { title: 'Teste', list: listAlbum, user: userInfo});
+});
+
+//search for artist, album, track
+router.get('/search', async (req,res,next) => {
+  let listData = await spotifyHelper.searchData(req.query.tipo, req.query.nome);
+  res.render('conteudo', { title: 'Teste', list: listData, user: userInfo});
 });
 
 router.get('/error', function(req, res, next) {
