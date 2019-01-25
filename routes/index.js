@@ -26,6 +26,12 @@ router.get('/conteudo', async (req,res,next) => {
   res.render('conteudo', { title: 'Teste', list: listAlbum});
 });
 
+//search for artist, album, track
+router.get('/search/:tipo/:nome', async (req,res,next) => {
+  let listData = await spotifyHelper.searchData(req.params.tipo, req.params.nome);
+  res.send(listData);
+});
+
 router.get('/error', function(req, res, next) {
   res.render('error', {
     title: 'Teste',

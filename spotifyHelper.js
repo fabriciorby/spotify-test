@@ -134,6 +134,27 @@ var SpotifyHelper = class SpotifyHelper {
                 console.log('Something went wrong!', err);
             });
     }
+
+    //tipo -> artist, track, album
+    async searchData(tipo, nome) {
+        try {
+            let trackInfo = { tracks: [] };
+            let data = await spotifyApi.searchTracks(tipo + ':' + nome, { limit: 50, offset: 0 });
+            console.log('I got ' + data.body.tracks.total + ' results!');
+            // Go through the first page of results
+            var firstPage = data.body.tracks.items;
+            console.log('The tracks in the first page are.. (popularity in parentheses)');
+            firstPage.forEach(function (track, index) {
+                trackInfo['tracks'].push(
+                    { 'id': track.id, 'name': track.name, 'pop': track.popularity }
+                );
+                console.log(index + ': ' + track.name + ' (' + track.popularity + ')');
+            });
+            return trackInfo
+        } catch (e) {
+            console.log('ERROR: ' + e)
+        }
+    }
 };
 
 module.exports = SpotifyHelper;
