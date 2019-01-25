@@ -34,6 +34,19 @@ var SpotifyHelper = class SpotifyHelper {
      * Set the credentials given on Spotify's My Applications page.
      * https://developer.spotify.com/my-applications
      */
+    async getUserInfo() {
+        try {
+            let data = await spotifyApi.getMe();
+            let user = {};
+            user.name = data.body.display_name;
+            user.email = data.body.email;
+            user.id = data.body.id;
+            return user;
+        } catch (e) {
+            console.log('Error while getting user info: ' + e)
+        }
+    }
+
     async getAccessToken() {
         // Retrieve an access token
         await spotifyApi.clientCredentialsGrant().then(
@@ -152,7 +165,7 @@ var SpotifyHelper = class SpotifyHelper {
             });
             return trackInfo
         } catch (e) {
-            console.log('ERROR: ' + e)
+            console.log('Error while getting data info: ' + e)
         }
     }
 };

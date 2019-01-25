@@ -16,7 +16,14 @@ router.get('/callback', async (req, res, next) => {
   let code = req.query.code;
   if (!spotifyApi.getRefreshToken())
     await spotifyHelper.getRefreshToken(code);
-  res.redirect('conteudo');
+  res.redirect('index');
+});
+
+//finalmente redirecionado para cá após o login
+router.get('/index', async (req,res,next) => {
+  let userInfo = await spotifyHelper.getUserInfo();
+  console.log(userInfo);
+  res.render('index', { title: 'Teste', user: userInfo});
 });
 
 //finalmente redirecionado para cá após o login

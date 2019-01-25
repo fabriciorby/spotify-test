@@ -2,8 +2,12 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p #{user.name}, welcome to #{title}
+  p Your e-mail is #{user.email}...
 
-block logar
+  p Meus álbuns
+  p Procurar álbum
+  p Adicionar álbum
 
-include spotify
+block scripts
+  include spotify
