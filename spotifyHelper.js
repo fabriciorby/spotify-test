@@ -130,7 +130,7 @@ var SpotifyHelper = class SpotifyHelper {
                 let firstPage = data.body.items;
                 firstPage.forEach(function (data, index) {
                     listAlbum['data'].push(
-                        { 'id': data.id, 'name': data.name}
+                        { 'id': data.id, 'name': data.name }
                     );
                     //debug
                     console.log(index + ': ' + data.name);
@@ -178,17 +178,28 @@ var SpotifyHelper = class SpotifyHelper {
             }
 
             firstPage.forEach(function (data, index) {
-                dataInfo['data'].push(
-                    { 'id': data.id, 'name': data.name}
+                dataInfo.data.push(
+                    { 'id': data.id, 'name': data.name }
                 );
-                console.log(index + ': ' + data.name);
+                //checa para pesquisa de álbum
+                if (data.artists != undefined) {
+                    dataInfo.data[index].artist = [];
+                    dataInfo.data[index].artist.push(data.artists[0].name);
+                }
+                if (data.release_date != undefined)
+                    dataInfo.data[index].release = data.release_date;
+                //checa para pesquisa de track
+                if (data.album != undefined) {
+                    dataInfo.data[index].album = data.album.name;
+                    dataInfo.data[index].release = data.album.release_date;
+                }
+                console.log(index + ': ' + JSON.stringify(dataInfo.data[index]));
             });
 
             dataInfo.total = total;
-
-            return dataInfo
+            return dataInfo;
         } catch (e) {
-            console.log('Error while getting data info: ' + e)
+            console.log('Error while getting data info: ' + e);
         }
     }
 };
