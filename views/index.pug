@@ -1,28 +1,30 @@
 extends layout
 
-block header
-  header#header
-    h1= title
-    p #{user.name}, welcome to #{title}
-    p Your e-mail is #{user.email}...
-
 block nav
-  nav#nav
+  nav#nav.navbar
     p Meus álbuns
     p Procurar álbum
     p Adicionar álbum
 
+block header
+  header#header.jumbotron.text-center
+    h1= title
+    p #{user.name}, welcome to #{title}
+    p Your e-mail is #{user.email}...
+
 block content
-  form(method='GET' action='/search' id='searchForm')
-    div.form-group
-      select(name='tipo' id='searchOption')
-        option(value='album' selected='selected') Álbum
-        option(value='track') Música
-        option(value='artist') Artista
-    div.form-group
-      label(for='name') Buscar:
-      input#name.form-control(type='text', placeholder='digite aqui' name='nome')
-    button.btn.btn-primary(type='submit') Buscar
+  section#content
+    form#searchForm(method='GET' action='/search')
+      div.form-group
+        label(for='tipo') Selecione o tipo de busca:
+        select#searchOption.form-control(name='tipo')
+          option(value='album' selected='selected') Álbum
+          option(value='track') Música
+          option(value='artist') Artista
+      div.form-group
+        label(for='nome') Digite sua busca:
+        input#searchData.form-control(type='text', placeholder='Buscar...' name='nome')
+      button.btn.btn-primary(type='submit') Buscar
 
 block scripts
   include spotify

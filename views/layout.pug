@@ -1,18 +1,29 @@
 doctype html
 html
   head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
     title= title
+    
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='https://code.jquery.com/jquery-3.3.1.min.js')
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css')
+
   body
-    block header
-      header#header
-        p This is a header
     block nav
+      nav#nav.navbar
+        p This is a nav
+    block header
+      header#header.jumbotron.text-center
+        p This is a header
     block content
       section#content
         p Some content
     block foot
       footer#footer
-        p Some Footer
+        div.container
+          p Some Footer
     block scripts
+      script(src='https://code.jquery.com/jquery-3.3.1.min.js')
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js')
+      script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js')
