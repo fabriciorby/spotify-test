@@ -1,13 +1,28 @@
 extends layout
 
-block content
-  h1= title
-  p #{user.name}, welcome to #{title}
-  p Your e-mail is #{user.email}...
+block header
+  header#header
+    h1= title
+    p #{user.name}, welcome to #{title}
+    p Your e-mail is #{user.email}...
 
-  p Meus álbuns
-  p Procurar álbum
-  p Adicionar álbum
+block nav
+  nav#nav
+    p Meus álbuns
+    p Procurar álbum
+    p Adicionar álbum
+
+block content
+  form(method='GET' action='/search' id='searchForm')
+    div.form-group
+      select(name='tipo' id='searchOption')
+        option(value='album' selected='selected') Álbum
+        option(value='track') Música
+        option(value='artist') Artista
+    div.form-group
+      label(for='name') Buscar:
+      input#name.form-control(type='text', placeholder='digite aqui' name='nome')
+    button.btn.btn-primary(type='submit') Buscar
 
 block scripts
   include spotify

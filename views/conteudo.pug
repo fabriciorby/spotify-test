@@ -2,5 +2,6 @@ extends index
 
 block append content
   div(class='grid-container')
-    each item in list
-        div(class='grid-item' id=item[0])= item[1]
+    - var aux = list.data
+    each item in aux
+        div(class='grid-item' id=item.id)= item.name

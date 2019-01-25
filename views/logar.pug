@@ -1,6 +1,10 @@
 extends layout
 
+block header
+  header#header
+    h1= title
+
 block content
-  h1= title
-  p Welcome to #{title}
-  button(onclick = "location.href='" + spotifyAuthURL + "'") click
+  section#section
+    p Welcome to #{title}
+    button(onclick = "location.href='" + spotifyAuthURL + "'") click

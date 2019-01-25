@@ -124,18 +124,22 @@ var SpotifyHelper = class SpotifyHelper {
     }
 
     async getAlbum() {
-        let listAlbum = new Map();
+        let listAlbum = { data: [] };
         await spotifyApi.getArtistAlbums('1dfeR4HaWDbWqFHLkxsg1d', { limit: 50, offset: 0 }).then(
             (data) => {
-                for (let album of data.body.items) {
-                    listAlbum.set(album.id, album.name);
-                }
+                let firstPage = data.body.items;
+                firstPage.forEach(function (data, index) {
+                    listAlbum['data'].push(
+                        { 'id': data.id, 'name': data.name}
+                    );
+                    //debug
+                    console.log(index + ': ' + data.name);
+                });
             },
             (err) => {
                 console.error(err);
             }
         );
-        console.log(listAlbum);
         return listAlbum;
     }
 
@@ -151,19 +155,38 @@ var SpotifyHelper = class SpotifyHelper {
     //tipo -> artist, track, album
     async searchData(tipo, nome) {
         try {
-            let trackInfo = { tracks: [] };
-            let data = await spotifyApi.searchTracks(tipo + ':' + nome, { limit: 50, offset: 0 });
-            console.log('I got ' + data.body.tracks.total + ' results!');
-            // Go through the first page of results
-            var firstPage = data.body.tracks.items;
-            console.log('The tracks in the first page are.. (popularity in parentheses)');
-            firstPage.forEach(function (track, index) {
-                trackInfo['tracks'].push(
-                    { 'id': track.id, 'name': track.name, 'pop': track.popularity }
+            let firstPage = {};
+            let total;
+            let dataInfo = { data: [] };
+            let data = await spotifyApi.search(nome, [tipo], { limit: 50, offset: 0 });
+
+            switch (tipo) {
+                case 'album':
+                    firstPage = data.body.albums.items;
+                    total = data.body.albums.total;
+                    break;
+                case 'track':
+                    firstPage = data.body.tracks.items;
+                    total = data.body.tracks.total;
+                    break;
+                case 'artist':
+                    firstPage = data.body.artists.items;
+                    total = data.body.artists.total;
+                    break;
+                default:
+                // code block
+            }
+
+            firstPage.forEach(function (data, index) {
+                dataInfo['data'].push(
+                    { 'id': data.id, 'name': data.name}
                 );
-                console.log(index + ': ' + track.name + ' (' + track.popularity + ')');
+                console.log(index + ': ' + data.name);
             });
-            return trackInfo
+
+            dataInfo.total = total;
+
+            return dataInfo
         } catch (e) {
             console.log('Error while getting data info: ' + e)
         }
