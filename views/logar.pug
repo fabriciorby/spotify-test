@@ -1,10 +1,11 @@
 extends layout
 
-block header
-  header#header
-    h1= title
-
 block content
   section#section
-    p Welcome to #{title}
-    button(onclick = "location.href='" + spotifyAuthURL + "'") click
+    div.container
+      div.row.justify-content-center.align-items-center
+        div.col-6
+          p Bem vindo ao Álbum da Semana.
+          p Por favor, faça seu login com o Spotify.
+        div.col-4
+          button.btn.btn-secondary(onclick = "location.href='" + spotifyAuthURL + "'") Login

@@ -4,4 +4,9 @@ block append content
   div(class='grid-container')
     - var aux = list.data
     each item in aux
-        div(class='grid-item' id=item.id)= item.name
+        div(class='grid-item' id=item.id)
+          p=item.name
+          if item.artist
+            p=item.artist
+          if item.release
+            p=item.release
