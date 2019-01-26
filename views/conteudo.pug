@@ -1,12 +1,29 @@
 extends index
 
 block append content
-  div(class='grid-container')
+  div.container
     - var aux = list.data
-    each item in aux
-        div(class='grid-item' id=item.id)
-          p=item.name
-          if item.artist
-            p=item.artist
-          if item.release
-            p=item.release
+    table.table
+      thead
+        tr
+          th(scope='col') Nome
+          if aux[0].artist
+            th(scope='col') Artista
+          if aux[0].release
+            th(scope='col') Release
+      tbody
+        each item in aux
+          tr
+            td= item.name
+            if item.artist
+              td= item.artist
+            if item.release
+              td= item.release
+
+          //- div.col-12
+          //-   div.card(id = item.id)
+          //-     p=item.name
+          //-   if item.artist
+          //-     p=item.artist
+          //-   if item.release
+          //-     p=item.release
