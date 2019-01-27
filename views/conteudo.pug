@@ -1,24 +1,37 @@
 extends index
 
 block append content
-  div.container
-    if list
-      - var aux = list.data
-      table.table
-        thead
-          tr
-            th(scope='col') Nome
-            if aux[0].artist
-              th(scope='col') Artista
-            if aux[0].release
-              th(scope='col') Release
-        tbody
-          each item in aux
+  section#content
+    div.table-responsive
+      if list
+        - var aux = list.data
+        table.table.table-bordered.table-hover
+          thead.thead-light
             tr
-              td= item.name
-              if item.artist
-                td= item.artist
-              if item.release
-                td= item.release
-    else
-      p Nenhum resultado foi encontrado.
+              th(scope='col') Imagem
+              th(scope='col') Nome
+              if aux[0].artist
+                th(scope='col') Artista
+              if aux[0].album_type
+                th(scope='col') Tipo de Álbum
+              if aux[0].release
+                th(scope='col') Release
+          tbody
+            each item in aux
+              tr
+                td.fit
+                  if item.images
+                    img.rounded.mh-100.mw-100(src=item.images.url)
+                  else
+                    svg.rounded(width='100%' height='50%')
+                      rect(fill='#e9ecef' width='100%' height='100%')
+                      text(fill='495057' dy='.3em' x='45%' y='50%') ?
+                td= item.name
+                if item.artist
+                  td= item.artist
+                if item.album_type
+                  td= item.album_type
+                if item.release
+                  td= item.release
+      else
+        p Nenhum resultado foi encontrado.
