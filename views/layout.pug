@@ -11,11 +11,13 @@ html
 
   body
     block nav
-      nav#nav.navbar
-        p This is a nav
+      nav#nav.navbar.navbar-nav.navbar-dark.bg-dark
+        div.container
+          span.navbar-brand.mb-0.h1.mr-auto Navbar
     block header
       header#header.jumbotron.text-center
-        p This is a header
+        h1.display-1= title
+        p.lead This is a header
     block content
       section#content
         p Some content
