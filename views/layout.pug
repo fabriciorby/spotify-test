@@ -9,22 +9,23 @@ html
     link(rel='stylesheet', href='https://use.fontawesome.com/releases/v5.6.3/css/all.css')
     link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css')
 
-  body
-    block nav
-      nav#nav.navbar.navbar-nav.navbar-dark.bg-dark
+  body.d-flex.flex-column.h-100
+    main.flex-shrink-0(role='main')
+      block nav
+        nav#nav.navbar.navbar-nav.navbar-dark.bg-dark
+          div.container
+            span.navbar-brand.mb-0.h1.mr-auto Navbar
+      block header
+        header#header.jumbotron.text-center
+          h1.display-1= title
+          p.lead This is a header
+      block content
+        section#content
+          p Some content
+    block footer
+      footer#footer.footer.mt-auto.py-3
         div.container
-          span.navbar-brand.mb-0.h1.mr-auto Navbar
-    block header
-      header#header.jumbotron.text-center
-        h1.display-1= title
-        p.lead This is a header
-    block content
-      section#content
-        p Some content
-    block foot
-      footer#footer
-        div.container
-          p Some Footer
+          span.text-muted Some Footer
     block scripts
       script(src='https://code.jquery.com/jquery-3.3.1.min.js')
       script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js')
