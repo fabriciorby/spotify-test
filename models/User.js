@@ -6,8 +6,14 @@ var UserSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    name: String,
-    email: String,
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
     created_on: { type: Date, default: Date.now },
     album_wallet: { id: [String] },
     friends: { id: [String] },

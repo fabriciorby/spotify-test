@@ -31,15 +31,15 @@ router.get('/index', async (req, res, next) => {
   userInfo = await spotifyHelper.getUserInfo();
 
   let query = { id: { $eq: userInfo.id } };
-  let update = { last_seen: new Date() };
+  let update = { name: userInfo.name, email: userInfo.email, last_seen: new Date() };
   let options = { upsert: true, new: true, setDefaultsOnInsert: true }
 
   userInfo = await User.findOneAndUpdate(query, update, options,
-    (err, data) => {
+    (err, data) =>   {
       if (err) throw err;
-      if (!result) data = new User(userInfo);
-      data.save((error) => {
-        if (err) throw error;
+      if (!data) data = new User(userInfo);
+      data.save((err) => {
+        if (err) throw err;
         else return data;
       });
     });
