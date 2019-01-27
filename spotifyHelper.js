@@ -153,6 +153,9 @@ var SpotifyHelper = class SpotifyHelper {
     }
 
     //tipo -> artist, track, album
+    //artist -> foto e nome
+    //album -> foto, nome, artista, tipo de album, ano
+    //track -> foto, nome, artista, tipo de album, album, ano
     async searchData(tipo, nome) {
         try {
             let firstPage = {};
@@ -181,12 +184,16 @@ var SpotifyHelper = class SpotifyHelper {
                 dataInfo.data.push(
                     { 'id': data.id, 'name': data.name }
                 );
+                //checa para pesquisa de artista
+                if (data.followers != undefined)
+                    dataInfo.tipo = 'artist';
                 if (data.images != undefined)
                     dataInfo.data[index].images = data.images[2];
                 //checa para pesquisa de álbum
                 if (data.artists != undefined) {
                     dataInfo.data[index].artist = [];
                     dataInfo.data[index].artist.push(data.artists[0].name);
+                    dataInfo.tipo = 'album';
                 }
                 if (data.release_date != undefined)
                     dataInfo.data[index].release = data.release_date.substring(0,4);
@@ -198,10 +205,11 @@ var SpotifyHelper = class SpotifyHelper {
                     dataInfo.data[index].release = data.album.release_date.substring(0,4);
                     dataInfo.data[index].album_type = capitalizeFirstLetter(data.album.album_type);
                     dataInfo.data[index].images = data.album.images[2];
+                    dataInfo.tipo = 'track';
                 }
                 console.log(index + ': ' + JSON.stringify(dataInfo.data[index]));
             });
-
+            console.log(dataInfo.tipo);
             dataInfo.total = total;
             return dataInfo;
         } catch (e) {

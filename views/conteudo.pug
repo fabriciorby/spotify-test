@@ -8,17 +8,19 @@ block append content
         table.table.table-bordered.table-hover
           thead.thead-light
             tr
-              th(scope='col') Imagem
-              th(scope='col') Nome
+              th(scope='col') Picture
+              th(scope='col') Name
               if aux[0].artist
-                th(scope='col') Artista
+                th(scope='col') Artist
+              if aux[0].album
+                th(scope='col') Album
               if aux[0].album_type
-                th(scope='col') Tipo de Álbum
+                th(scope='col') Type
               if aux[0].release
                 th(scope='col') Release
           tbody
             each item in aux
-              tr
+              tr(id=item.id)
                 td.fit
                   if item.images
                     img.rounded.mh-100.mw-100(src=item.images.url)
@@ -29,6 +31,8 @@ block append content
                 td= item.name
                 if item.artist
                   td= item.artist
+                if item.album
+                  td= item.album
                 if item.album_type
                   td= item.album_type
                 if item.release

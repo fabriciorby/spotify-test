@@ -3,9 +3,7 @@ extends layout
 block content
   section#section
     div.container
-      div.row.justify-content-center.align-items-center
-        div.col-6
-          p Bem vindo ao Álbum da Semana.
-          p Por favor, faça seu login com o Spotify.
-        div.col-4
-          button.btn.btn-secondary(onclick = "location.href='" + spotifyAuthURL + "'") Login
+      h4.display-4 Welcome to #{title}
+      p.lead Please sign in with Spotify 
+        i.fab.fa-spotify .
+      button.btn.btn-primary(onclick = "location.href='" + spotifyAuthURL + "'") Login
