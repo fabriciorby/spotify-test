@@ -8,12 +8,12 @@ block nav
 
 block header
   header#header.jumbotron.text-center
-    h1= title
-    p #{user.name}, welcome to #{title}
-    p Your e-mail is #{user.email}...
+    h1.display-1= title
+    p.lead #{user.name}, welcome to #{title}
+    p.lead Your e-mail is #{user.email}...
 
 block content
-  section#busca(style='margin-bottom:2rem')
+  section#busca.container(style='margin-bottom:2rem')
     form#searchForm(method='GET' action='/search')
       div.form-row
         div.col-2
@@ -26,7 +26,8 @@ block content
           label.sr-only(for='nome') Digite sua busca
           input#searchData.form-control(type='text', placeholder='Buscar...' name='nome')
         div.col-2
-          button.btn.btn-primary.btn-block(type='submit') Buscar
+          button.btn.btn-primary.btn-block(type='submit')
+            i.fas.fa-search
 
 block scripts
   include spotify
