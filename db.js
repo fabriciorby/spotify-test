@@ -1,16 +1,15 @@
-const MongoClient = require('mongodb').MongoClient;
+const mongoose = require('mongoose');
 
-MongoClient.connect('mongodb://localhost:27017/animals', { useNewUrlParser: true }, (err, client) => {
+let uristring = process.env.MONGODB_URI || 'mongodb://localhost:27017/animals'
+
+mongoose.connect(uristring, { useNewUrlParser: true }, function (err, res) {
   if (err) {
-    throw err;
+    console.log('ERROR connecting to: ' + uristring + '. ' + err);
+  } else {
+    console.log('Succeeded connected to: ' + uristring);
   }
-  let db = client.db('animals');
-  db.collection('aves').find().toArray((err, result) => {
-    if (err) {
-      throw err;
-    }
-    console.log(result);
-  });
 });
 
-module.exports = MongoClient;
+mongoose.set('useCreateIndex', true);
+
+module.exports = mongoose;

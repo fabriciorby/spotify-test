@@ -5,6 +5,8 @@ const SpotifyHelper = require('../spotifyHelper');
 const spotifyHelper = new SpotifyHelper();
 const constants = require('../config/constants');
 
+const User = require('../models/User')
+
 let title = constants.title;
 let userInfo = {};
 
@@ -12,7 +14,7 @@ let userInfo = {};
 router.get('/', async (req, res, next) => {
   spotifyApi.setRedirectURI(req.protocol + '://' + req.get('host') + '/callback');
   let authURL = await spotifyHelper.getAuthURL();
-  res.render('logar', { title: title , spotifyAuthURL: authURL});
+  res.render('logar', { title: title, spotifyAuthURL: authURL });
 });
 
 //chamado após a autenticação Spotify apenas para pegar o code
@@ -24,32 +26,50 @@ router.get('/callback', async (req, res, next) => {
 });
 
 //finalmente redirecionado para cá após o login
-router.get('/index', async (req,res,next) => {
+router.get('/index', async (req, res, next) => {
+
   userInfo = await spotifyHelper.getUserInfo();
+
+  let query = { id: { $eq: userInfo.id } };
+  let update = { last_seen: new Date() };
+  let options = { upsert: true, new: true, setDefaultsOnInsert: true }
+
+  userInfo = await User.findOneAndUpdate(query, update, options,
+    (err, data) => {
+      if (err) throw err;
+      if (!result) data = new User(userInfo);
+      data.save((error) => {
+        if (err) throw error;
+        else return data;
+      });
+    });
+
   console.log(userInfo);
-  res.render('index', { title: title, user: userInfo});
+
+  res.render('index', { title: title, user: userInfo });
 });
 
 //finalmente redirecionado para cá após o login
-router.get('/conteudo', async (req,res,next) => {
+router.get('/conteudo', async (req, res, next) => {
   let listAlbum = await spotifyHelper.getAlbum();
-  res.render('conteudo', { title: title, list: listAlbum, user: userInfo});
+  res.render('conteudo', { title: title, list: listAlbum, user: userInfo });
 });
 
 //search for artist, album, track
-router.get('/search', async (req,res,next) => {
+router.get('/search', async (req, res, next) => {
   let listData = await spotifyHelper.searchData(req.query.tipo, req.query.nome);
-  res.render('conteudo', { title: title, list: listData, user: userInfo});
+  res.render('conteudo', { title: title, list: listData, user: userInfo });
 });
 
-router.get('/error', function(req, res, next) {
+router.get('/error', function (req, res, next) {
   res.render('error', {
     title: 'Teste',
     message: 'mensagem',
     error: {
       status: 'rs',
       stack: 'lalala'
-    }});
+    }
+  });
 });
 
 module.exports = router;
