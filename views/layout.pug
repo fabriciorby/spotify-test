@@ -10,7 +10,7 @@ html
     link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css')
 
   body.d-flex.flex-column.h-100
-    main.flex-shrink-0(role='main')
+    main(role='main')
       block nav
         nav#nav.navbar.navbar-nav.navbar-dark.bg-dark
           div.container
@@ -23,7 +23,7 @@ html
         section#content
           p Some content
     block footer
-      footer#footer.footer.mt-auto.py-3
+      footer#footer.footer.mt-auto.py-3.border-top
         div.container
           span.text-muted Some Footer
     block scripts
