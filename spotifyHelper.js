@@ -181,17 +181,23 @@ var SpotifyHelper = class SpotifyHelper {
                 dataInfo.data.push(
                     { 'id': data.id, 'name': data.name }
                 );
+                if (data.images != undefined)
+                    dataInfo.data[index].images = data.images[2];
                 //checa para pesquisa de álbum
                 if (data.artists != undefined) {
                     dataInfo.data[index].artist = [];
                     dataInfo.data[index].artist.push(data.artists[0].name);
                 }
                 if (data.release_date != undefined)
-                    dataInfo.data[index].release = data.release_date;
+                    dataInfo.data[index].release = data.release_date.substring(0,4);
+                if (data.album_type != undefined)
+                    dataInfo.data[index].album_type = capitalizeFirstLetter(data.album_type);
                 //checa para pesquisa de track
                 if (data.album != undefined) {
                     dataInfo.data[index].album = data.album.name;
-                    dataInfo.data[index].release = data.album.release_date;
+                    dataInfo.data[index].release = data.album.release_date.substring(0,4);
+                    dataInfo.data[index].album_type = capitalizeFirstLetter(data.album.album_type);
+                    dataInfo.data[index].images = data.album.images[2];
                 }
                 console.log(index + ': ' + JSON.stringify(dataInfo.data[index]));
             });
@@ -203,5 +209,9 @@ var SpotifyHelper = class SpotifyHelper {
         }
     }
 };
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 module.exports = SpotifyHelper;

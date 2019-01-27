@@ -13,18 +13,20 @@ block header
     p Your e-mail is #{user.email}...
 
 block content
-  section#content
+  section#busca(style='margin-bottom:2rem')
     form#searchForm(method='GET' action='/search')
-      div.form-group
-        label(for='tipo') Selecione o tipo de busca:
-        select#searchOption.form-control(name='tipo')
-          option(value='album' selected='selected') Álbum
-          option(value='track') Música
-          option(value='artist') Artista
-      div.form-group
-        label(for='nome') Digite sua busca:
-        input#searchData.form-control(type='text', placeholder='Buscar...' name='nome')
-      button.btn.btn-primary(type='submit') Buscar
+      div.form-row
+        div.col-2
+          label.sr-only(for='tipo') Categoria
+          select#searchOption.form-control(name='tipo')
+            option(value='album' selected='selected') Álbum
+            option(value='track') Música
+            option(value='artist') Artista
+        div.col
+          label.sr-only(for='nome') Digite sua busca
+          input#searchData.form-control(type='text', placeholder='Buscar...' name='nome')
+        div.col-2
+          button.btn.btn-primary.btn-block(type='submit') Buscar
 
 block scripts
   include spotify
