@@ -2,37 +2,50 @@ section#content.container
   div.table-responsive
     if list
       - var aux = list.data
-      table.table.table-bordered.table-hover
-        thead.thead-light
+      table.table.table-hover.table-sm
+        thead
           tr
-            th(scope='col') Picture
-            th(scope='col') Name
+            th.border-0.bg-white.fit(scope='col')
+            th.border-0.align-middle(scope='col') Picture
+            th.border-0.align-middle(scope='col') Name
             if aux[0].artist
-              th(scope='col') Artist
+              th.border-0.align-middle(scope='col') Artist
             if aux[0].album
-              th(scope='col') Album
+              th.border-0.align-middle(scope='col') Album
             if aux[0].album_type
-              th(scope='col') Type
+              th.border-0.align-middle(scope='col') Type
             if aux[0].release
-              th(scope='col') Release
+              th.border-0.align-middle(scope='col') Release
         tbody
           each item in aux
             tr(id=item.id)
-              td.fit
-                if item.images
-                  img.rounded.mh-100.mw-100(src=item.images.url)
-                else
-                  svg.rounded(width='100%' height='50%')
-                    rect(fill='#e9ecef' width='100%' height='100%')
-                    text(fill='495057' dy='.3em' x='45%' y='50%') ?
-              td= item.name
+
+              td.align-middle.border-0
+                button.btn
+                  i.far.fa-heart
+
+              td.fit.align-middle
+                div.img-container
+                  if item.images
+                    img.rounded.mh-100.mw-100(src=item.images.url)
+                  else
+                    svg.rounded(width='100%' height='50px')
+                      rect(fill='#e9ecef' width='100%' height='100%')
+                      text(fill='495057' dy='.3em' x='45%' y='50%') ?
+                  div.overlay
+                    button.btn.icon(data-toggle='dropdown')
+                      i.fa.fa-ellipsis-v
+                    div.dropdown-menu(aria-labelledby='dropdownMenuButton')
+                      a.dropdown-item(href='#') Details
+
+              td.align-middle= item.name
               if item.artist
-                td= item.artist
+                td.align-middle= item.artist
               if item.album
-                td= item.album
+                td.align-middle= item.album
               if item.album_type
-                td= item.album_type
+                td.align-middle= item.album_type
               if item.release
-                td= item.release
+                td.align-middle= item.release
     else
       p Nenhum resultado foi encontrado.
