@@ -13,23 +13,41 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-//display da tabela
+//adiciona album/artista/track favorito
 router.post('/adicionaFavorito/:tipo/:dataId', async (req, res, next) => {
-  let body = {};
   
   let tipo = req.params.tipo;
   let dataId = req.params.dataId;
   let userId = req.app.locals.userInfo.id;
 
-  console.log(userId);
-
   try {
-    await dbHelper.userAddFavorite(userId, dataId, tipo);
+    if (await dbHelper.userAddFavorite(userId, dataId, tipo))
+      res.sendStatus(200);
+    else
+      res.sendStatus(403);
   } catch (err) {
+    res.sendStatus(500);
     throw err;
   }
 
-  res.render('favoritar');
+});
+
+router.post('/removeFavorito/:tipo/:dataId', async (req, res, next) => {
+  
+  let tipo = req.params.tipo;
+  let dataId = req.params.dataId;
+  let userId = req.app.locals.userInfo.id;
+
+  try {
+    if (await dbHelper.userRemoveFavorite(userId, dataId, tipo))
+      res.sendStatus(200);
+    else
+      res.sendStatus(403);
+  } catch (err) {
+    res.sendStatus(500);
+    throw err;
+  }
+
 });
 
 module.exports = router;

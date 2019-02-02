@@ -1,5 +1,4 @@
 //ajax da tabela
-
 $('#searchForm').submit(function (e) {
     $.ajax({
         type: 'GET',
@@ -13,23 +12,30 @@ $('#searchForm').submit(function (e) {
 });
 
 //ajax da curtida
-
 $(document).on('click', '.favoritar', function () {
 
     let obj = this;
-
-    if ($(obj).find('.fas').length) return;
-
     let tableTipo = $(obj).closest('table').attr('id'); // table row ID
     let dataId = $(obj).closest('tr').attr('id'); // table row ID
 
-    $.ajax({
-        type: 'POST',
-        url: '/users/adicionaFavorito/' + tableTipo + '/' + dataId,
-        data: {},
-        success: function (data) {
-            $(obj).closest('.btn').find('.far').toggleClass('far fas');
-        }
-    });
+    if (!$(obj).find('.fas').length) {
+        $.ajax({
+            type: 'POST',
+            url: '/users/adicionaFavorito/' + tableTipo + '/' + dataId,
+            data: {},
+            success: function (data) {
+                $(obj).closest('.btn').find('.far').toggleClass('far fas');
+            }
+        });
+    } else {
+        $.ajax({
+            type: 'POST',
+            url: '/users/removeFavorito/' + tableTipo + '/' + dataId,
+            data: {},
+            success: function (data) {
+                $(obj).closest('.btn').find('.fas').toggleClass('fas far');
+            }
+        });
+    }
 
 });
