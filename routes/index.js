@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
+
 const spotifyApi = require('../spotifyConfig')
 const SpotifyHelper = require('../spotifyHelper');
 const spotifyHelper = new SpotifyHelper();
-const constants = require('../config/constants');
 
 const DBHelper = require('../dbHelper')
 const dbHelper = new DBHelper();
+
+const constants = require('../config/constants');
 
 let title = constants.title;
 let userInfo;
@@ -27,8 +29,10 @@ router.get('/callback', async (req, res, next) => {
   
   let spotifyUser = await spotifyHelper.getUserInfo();
 
-  userInfo = await dbHelper.setOrUpdateUser(spotifyUser);
+  req.app.locals.userInfo = await dbHelper.setOrUpdateUser(spotifyUser);
 
+  userInfo = req.app.locals.userInfo;
+  
   res.redirect('index');
 });
 

@@ -4,8 +4,6 @@ const User = require('./models/User')
 
 let DBHelper = class DBHelper {
 
-    constructor(){};
-
     async setOrUpdateUser(spotifyUser) {
 
         let query = { id: { $eq: spotifyUser.id } };
@@ -28,8 +26,31 @@ let DBHelper = class DBHelper {
         }
 
         console.log(userInfo);
-        
+
         return userInfo;
+    }
+
+    async userAddFavorite(userId, dataId, tipo) {
+
+        let data = await User.findOne()
+            .where('id', userId)
+            .where('favorites.' + tipo, dataId)
+            .exec();
+
+        if (data)
+            return false;
+
+        if (!data) {
+            data = await User.findOne()
+                .where('id', userId)
+                .exec();
+            data.favorites[tipo].push(dataId);
+            data = await data.save();
+        }
+
+        if (data)
+            return true
+        //data = data.favorites[tipo];
     }
 }
 

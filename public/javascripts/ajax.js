@@ -15,17 +15,21 @@ $('#searchForm').submit(function (e) {
 //ajax da curtida
 
 $(document).on('click', '.favoritar', function () {
-    alert('clicou');
-    let tableTipo = $(this).closest('table').attr('id'); // table row ID
-    let dataId = $(this).closest('tr').attr('id'); // table row ID
+
+    let obj = this;
+
+    if ($(obj).find('.fas').length) return;
+
+    let tableTipo = $(obj).closest('table').attr('id'); // table row ID
+    let dataId = $(obj).closest('tr').attr('id'); // table row ID
+
     $.ajax({
         type: 'POST',
-        url: '/users/adicionaFavorito/' + tableTipo,
-        data: {
-            id: dataId
-        },
+        url: '/users/adicionaFavorito/' + tableTipo + '/' + dataId,
+        data: {},
         success: function (data) {
-            console.log(data); // show response from the script.
+            $(obj).closest('.btn').find('.far').toggleClass('far fas');
         }
     });
+
 });
