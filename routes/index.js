@@ -5,10 +5,11 @@ const SpotifyHelper = require('../spotifyHelper');
 const spotifyHelper = new SpotifyHelper();
 const constants = require('../config/constants');
 
-const User = require('../models/User')
+const DBHelper = require('../dbHelper')
+const dbHelper = new DBHelper();
 
 let title = constants.title;
-let userInfo = {};
+let userInfo;
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
@@ -24,28 +25,9 @@ router.get('/callback', async (req, res, next) => {
   if (!spotifyApi.getRefreshToken())
     await spotifyHelper.getRefreshToken(code);
   
-  let userSpotify = await spotifyHelper.getUserInfo();
+  let spotifyUser = await spotifyHelper.getUserInfo();
 
-  let query = { id: { $eq: userSpotify.id } };
-  let update = { last_seen: new Date() };
-  let options = { new: true, returnNewDocument: true }
-
-  //check if user already exists, if so then update last_seen
-  userInfo = await User.findOneAndUpdate(query, update, options,
-    (err, data) => {
-      if (err) throw err;
-      return data;
-    });
-
-  //else, create new User on DB
-  if (!userInfo) {
-    userInfo = new User(userSpotify);
-    await userInfo.save((err) => {
-      if (err) throw err;
-    })
-  }
-
-  console.log(userInfo);
+  userInfo = await dbHelper.setOrUpdateUser(spotifyUser);
 
   res.redirect('index');
 });
@@ -55,7 +37,7 @@ router.get('/index', async (req, res, next) => {
   res.render('index', { title: title, user: userInfo });
 });
 
-//finalmente redirecionado para cá após o login
+//display da tabela
 router.get('/conteudo', async (req, res, next) => {
   let listAlbum = await spotifyHelper.getAlbum();
   res.render('conteudo', { title: title, list: listAlbum, user: userInfo });

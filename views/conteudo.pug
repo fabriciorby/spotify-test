@@ -2,7 +2,7 @@ section#content.container
   div.table-responsive
     if list
       - var aux = list.data
-      table.table.table-hover.table-sm
+      table.table.table-hover.table-sm(id=list.tipo)
         thead
           tr
             th.border-0.bg-white.fit(scope='col')
@@ -21,7 +21,7 @@ section#content.container
             tr(id=item.id)
 
               td.align-middle.border-0
-                button.btn
+                button.btn.favoritar
                   i.far.fa-heart
 
               td.fit.align-middle

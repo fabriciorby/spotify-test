@@ -1,6 +1,6 @@
 const spotifyApi = require('./spotifyConfig');
 
-var SpotifyHelper = class SpotifyHelper {
+let SpotifyHelper = class SpotifyHelper {
     constructor(spotifyApi) {
         this.spotifyApi = spotifyApi;
         this.state = 'some-state-of-my-choice';
