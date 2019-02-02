@@ -25,6 +25,10 @@ $(document).on('click', '.favoritar', function () {
             data: {},
             success: function (data) {
                 $(obj).closest('.btn').find('.far').toggleClass('far fas');
+            },
+            error: function (request, status, error) {
+                if (request.status == 403)
+                    $(obj).closest('.btn').find('.far').toggleClass('far fas');
             }
         });
     } else {
@@ -34,6 +38,10 @@ $(document).on('click', '.favoritar', function () {
             data: {},
             success: function (data) {
                 $(obj).closest('.btn').find('.fas').toggleClass('fas far');
+            },
+            error: function (request, status, error) {
+                if (request.status == 403)
+                    $(obj).closest('.btn').find('.fas').toggleClass('fas far');
             }
         });
     }
