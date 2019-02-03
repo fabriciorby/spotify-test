@@ -82,6 +82,15 @@ let DBHelper = class DBHelper {
             return true
         }
     }
+
+    async getFavorites(userId, tipo) {
+        let data = await User.findOne()
+            .where('id', userId)
+            .where('favorites.' + tipo)
+            .exec();
+
+        return data.favorites[tipo];
+    }
 }
 
 module.exports = DBHelper;

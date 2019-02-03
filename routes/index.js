@@ -50,7 +50,8 @@ router.get('/conteudo', async (req, res, next) => {
 //search for artist, album, track
 router.get('/search', async (req, res, next) => {
   let listData = await spotifyHelper.searchData(req.query.tipo, req.query.nome);
-  res.render('conteudo', { title: title, list: listData, user: userInfo });
+  let listFavorites = await dbHelper.getFavorites(userInfo.id, req.query.tipo);
+  res.render('conteudo', { title: title, list: listData, listFavorites: listFavorites, user: userInfo });
 });
 
 router.get('/error', function (req, res, next) {

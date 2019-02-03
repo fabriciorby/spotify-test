@@ -9,13 +9,13 @@ const dbHelper = new DBHelper();
 router.use(bodyParser.json());
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
 
 //adiciona album/artista/track favorito
 router.post('/adicionaFavorito/:tipo/:dataId', async (req, res, next) => {
-  
+
   let tipo = req.params.tipo;
   let dataId = req.params.dataId;
   let userId = req.app.locals.userInfo.id;
@@ -33,7 +33,7 @@ router.post('/adicionaFavorito/:tipo/:dataId', async (req, res, next) => {
 });
 
 router.post('/removeFavorito/:tipo/:dataId', async (req, res, next) => {
-  
+
   let tipo = req.params.tipo;
   let dataId = req.params.dataId;
   let userId = req.app.locals.userInfo.id;
@@ -50,4 +50,21 @@ router.post('/removeFavorito/:tipo/:dataId', async (req, res, next) => {
 
 });
 
+router.get('/consultaFavoritos/:tipo', async (req, res, next) => {
+
+  let tipo = req.params.tipo;
+  let userId = req.app.locals.userInfo.id;
+
+  try {
+    let data = await dbHelper.getFavorites(userId, tipo);
+    if (!data)
+      res.sendStatus(403);
+    console.log(data);
+    res.send(data);
+  } catch (err) {
+    res.sendStatus(500);
+    throw err;
+  }
+
+});
 module.exports = router;

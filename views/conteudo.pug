@@ -22,8 +22,10 @@ section#content.container
 
               td.align-middle.border-0
                 button.btn.favoritar
-                  i.far.fa-heart
-
+                  - if (listFavorites.includes(item.id))
+                    i.fas.fa-heart
+                  - else
+                    i.far.fa-heart
               td.fit.align-middle
                 div.img-container
                   if item.images
