@@ -51,7 +51,7 @@ router.get('/conteudo', async (req, res, next) => {
 router.get('/search', async (req, res, next) => {
   let listData = await spotifyHelper.searchData(req.query.tipo, req.query.nome);
   let listFavorites = await dbHelper.getFavorites(userInfo.id, req.query.tipo);
-  res.render('conteudo', { title: title, list: listData, listFavorites: listFavorites, user: userInfo });
+  res.render('conteudo', { list: listData, listFavorites: listFavorites });
 });
 
 router.get('/error', function (req, res, next) {

@@ -47,3 +47,25 @@ $(document).on('click', '.favoritar', function () {
     }
 
 });
+
+$('#favorites').click(function (e) {
+    $.ajax({
+        type: 'GET',
+        url: '/users/consultaFavoritos/album',
+        data: {}, // serializes the form's elements.
+        success: function (data) {
+            $('#favorites').toggleClass('active', true);
+            $('#home').toggleClass('active', false);
+            $('#content').replaceWith(data); // show response from the script.
+        }
+    });
+    e.preventDefault(); // avoid to execute the actual submit of the form.});
+});
+
+
+$('#home').click((e) => {
+    e.preventDefault(); // avoid to execute the actual submit of the form.});
+    $('#home').toggleClass('active', true);
+    $('#favorites').toggleClass('active', false);
+    $('#content').html(''); // show response from the script.
+});

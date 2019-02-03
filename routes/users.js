@@ -2,6 +2,9 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var router = express.Router();
 
+const SpotifyHelper = require('../spotifyHelper');
+const spotifyHelper = new SpotifyHelper();
+
 const DBHelper = require('../dbHelper')
 const dbHelper = new DBHelper();
 
@@ -56,15 +59,16 @@ router.get('/consultaFavoritos/:tipo', async (req, res, next) => {
   let userId = req.app.locals.userInfo.id;
 
   try {
-    let data = await dbHelper.getFavorites(userId, tipo);
-    if (!data)
+    let idList = await dbHelper.getFavorites(userId, tipo);
+    let dataList = await spotifyHelper.getInfosByIdList(tipo, idList);
+    if (!dataList)
       res.sendStatus(403);
-    console.log(data);
-    res.send(data);
+    res.render('conteudo', { list: dataList, listFavorites: idList });
   } catch (err) {
     res.sendStatus(500);
     throw err;
   }
 
 });
+
 module.exports = router;

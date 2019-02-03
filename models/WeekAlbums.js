@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var WeekAlbumWallettSchema = new mongoose.Schema({
+var WeekAlbumsWallettSchema = new mongoose.Schema({
   name: String,
   creator: String,
   participants: {id: [String]},
@@ -10,4 +10,4 @@ var WeekAlbumWallettSchema = new mongoose.Schema({
   updated_date: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('WeekAlbum', WeekAlbumWallettSchema);
+module.exports = mongoose.model('WeekAlbums', WeekAlbumsWallettSchema);
