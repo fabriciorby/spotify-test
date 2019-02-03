@@ -89,7 +89,10 @@ let DBHelper = class DBHelper {
             .where('favorites.' + tipo)
             .exec();
 
-        return data.favorites[tipo];
+        if (data)
+            return data.favorites[tipo];
+        else
+            return;
     }
 }
 

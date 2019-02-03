@@ -57,12 +57,17 @@ router.get('/consultaFavoritos/:tipo', async (req, res, next) => {
 
   let tipo = req.params.tipo;
   let userId = req.app.locals.userInfo.id;
+  let idList;
+  let dataList;
 
   try {
-    let idList = await dbHelper.getFavorites(userId, tipo);
-    let dataList = await spotifyHelper.getInfosByIdList(tipo, idList);
-    if (!dataList)
-      res.sendStatus(403);
+    idList = await dbHelper.getFavorites(userId, tipo);
+    if (idList.length) {
+      dataList = await spotifyHelper.getInfosByIdList(tipo, idList);
+      if (!dataList)
+        res.sendStatus(403);
+    }
+
     res.render('conteudo', { list: dataList, listFavorites: idList });
   } catch (err) {
     res.sendStatus(500);
