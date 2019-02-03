@@ -1,4 +1,4 @@
-var mongoose = require('../db');
+var mongoose = require('../dbConfig');
 
 var UserSchema = new mongoose.Schema({
     id: {

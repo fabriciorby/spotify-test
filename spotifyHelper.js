@@ -1,6 +1,6 @@
 const spotifyApi = require('./spotifyConfig');
 
-var SpotifyHelper = class SpotifyHelper {
+let SpotifyHelper = class SpotifyHelper {
     constructor(spotifyApi) {
         this.spotifyApi = spotifyApi;
         this.state = 'some-state-of-my-choice';
@@ -152,6 +152,32 @@ var SpotifyHelper = class SpotifyHelper {
             });
     }
 
+    async getInfosByIdList(tipo, idList) {
+        let data;
+        let dataInfo = { data: [] };
+
+        switch (tipo) {
+            case 'album':
+                data = await spotifyApi.getAlbums(idList);
+                data = data.body.albums;
+                break;
+            case 'track':
+                data = await spotifyApi.getTracks(idList);
+                data = data.body.tracks;
+                break;
+            case 'artist':
+                data = await spotifyApi.getArtists(idList);
+                data = data.body.artists;
+                break;
+            default:
+            // code block
+        }
+
+        dataInfo = preencheDataTipo(data, dataInfo);
+        
+        return dataInfo;
+    }
+
     //tipo -> artist, track, album
     //artist -> foto e nome
     //album -> foto, nome, artista, tipo de album, ano
@@ -180,37 +206,10 @@ var SpotifyHelper = class SpotifyHelper {
                 // code block
             }
 
-            firstPage.forEach(function (data, index) {
-                dataInfo.data.push(
-                    { 'id': data.id, 'name': data.name }
-                );
-                //checa para pesquisa de artista
-                if (data.followers != undefined)
-                    dataInfo.tipo = 'artist';
-                if (data.images != undefined)
-                    dataInfo.data[index].images = data.images[2];
-                //checa para pesquisa de álbum
-                if (data.artists != undefined) {
-                    dataInfo.data[index].artist = [];
-                    dataInfo.data[index].artist.push(data.artists[0].name);
-                    dataInfo.tipo = 'album';
-                }
-                if (data.release_date != undefined)
-                    dataInfo.data[index].release = data.release_date.substring(0,4);
-                if (data.album_type != undefined)
-                    dataInfo.data[index].album_type = capitalizeFirstLetter(data.album_type);
-                //checa para pesquisa de track
-                if (data.album != undefined) {
-                    dataInfo.data[index].album = data.album.name;
-                    dataInfo.data[index].release = data.album.release_date.substring(0,4);
-                    dataInfo.data[index].album_type = capitalizeFirstLetter(data.album.album_type);
-                    dataInfo.data[index].images = data.album.images[2];
-                    dataInfo.tipo = 'track';
-                }
-                console.log(index + ': ' + JSON.stringify(dataInfo.data[index]));
-            });
-            console.log(dataInfo.tipo);
+            dataInfo = preencheDataTipo(firstPage, dataInfo);
+
             dataInfo.total = total;
+
             return dataInfo;
         } catch (e) {
             console.log('Error while getting data info: ' + e);
@@ -220,6 +219,39 @@ var SpotifyHelper = class SpotifyHelper {
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function preencheDataTipo(firstPage, dataInfo) {
+    firstPage.forEach(function (data, index) {
+        dataInfo.data.push(
+            { 'id': data.id, 'name': data.name }
+        );
+        //checa para pesquisa de artista
+        if (data.followers != undefined)
+            dataInfo.tipo = 'artist';
+        if (data.images != undefined)
+            dataInfo.data[index].images = data.images[2];
+        //checa para pesquisa de álbum
+        if (data.artists != undefined) {
+            dataInfo.data[index].artist = [];
+            dataInfo.data[index].artist.push(data.artists[0].name);
+            dataInfo.tipo = 'album';
+        }
+        if (data.release_date != undefined)
+            dataInfo.data[index].release = data.release_date.substring(0, 4);
+        if (data.album_type != undefined)
+            dataInfo.data[index].album_type = capitalizeFirstLetter(data.album_type);
+        //checa para pesquisa de track
+        if (data.album != undefined) {
+            dataInfo.data[index].album = data.album.name;
+            dataInfo.data[index].release = data.album.release_date.substring(0, 4);
+            dataInfo.data[index].album_type = capitalizeFirstLetter(data.album.album_type);
+            dataInfo.data[index].images = data.album.images[2];
+            dataInfo.tipo = 'track';
+        }
+        console.log(index + ': ' + JSON.stringify(dataInfo.data[index]));
+    });
+    return dataInfo;
 }
 
 module.exports = SpotifyHelper;
