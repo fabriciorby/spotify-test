@@ -51,7 +51,7 @@ $(document).on('click', '.favoritar', function () {
 $('#favorites').click(function (e) {
     $.ajax({
         type: 'GET',
-        url: '/users/consultaFavoritos/album',
+        url: '/users/consultaFavoritos/album/1',
         data: {}, // serializes the form's elements.
         success: function (data) {
             $('#favorites').toggleClass('active', true);
@@ -60,6 +60,29 @@ $('#favorites').click(function (e) {
         }
     });
     e.preventDefault(); // avoid to execute the actual submit of the form.});
+});
+
+//ajax da curtida
+$(document).on('click', '#navFav ul.pagination li a', function () {
+
+    let obj = this;
+    let page;
+
+    if ($(obj).is($('#navFav ul.pagination li a:first')))
+        page = $(obj).closest('li').nextAll('.active').prev().find('a').text();
+    else if ($(obj).is($('#navFav ul.pagination li a:last')))
+        page = $(obj).closest('li').prevAll('.active').next().find('a').text();
+    else
+        page = $(obj).text();
+
+    $.ajax({
+        type: 'GET',
+        url: '/users/consultaFavoritos/album/' + page,
+        data: {}, // serializes the form's elements.
+        success: function (data) {
+            $('#content').replaceWith(data); // show response from the script.
+        }
+    });
 });
 
 

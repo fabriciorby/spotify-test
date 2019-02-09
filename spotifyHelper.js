@@ -171,18 +171,13 @@ let SpotifyHelper = class SpotifyHelper {
         }
 
         let dataBodyTipo = data.body[tipo + 's'];
-        let page = dataBodyTipo.items;
 
-        dataInfo = preencheDataTipo(page, dataInfo);
+        dataInfo = preencheDataTipo(dataBodyTipo, dataInfo, tipo);
         dataInfo = preenchePagination(dataBodyTipo, dataInfo);
 
         return dataInfo;
     }
 
-    //tipo -> artist, track, album
-    //artist -> foto e nome
-    //album -> foto, nome, artista, tipo de album, ano
-    //track -> foto, nome, artista, tipo de album, album, ano
     async searchData(tipo, nome) {
         try {
             let dataInfo = { data: [] };
@@ -199,6 +194,7 @@ let SpotifyHelper = class SpotifyHelper {
             console.log('Error while getting data info: ' + e);
         }
     }
+
 };
 
 function capitalizeFirstLetter(string) {
@@ -206,6 +202,10 @@ function capitalizeFirstLetter(string) {
 }
 
 function preencheDataTipo(page, dataInfo, tipo) {
+//tipo -> artist, track, album
+//artist -> foto e nome
+//album -> foto, nome, artista, tipo de album, ano
+//track -> foto, nome, artista, tipo de album, album, ano
 
     dataInfo.tipo = tipo;
 
