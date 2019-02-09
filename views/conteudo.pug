@@ -1,6 +1,6 @@
 section#content.container
   div.table-responsive
-    if list
+    if list.data[0]
       - var aux = list.data
       table.table.table-hover.table-sm(id=list.tipo)
         thead
@@ -49,5 +49,19 @@ section#content.container
                 td.align-middle= item.album_type
               if item.release
                 td.align-middle= item.release
+
+      nav(aria-label='Pagination')
+        ul.pagination.justify-content-center
+          li.page-item.disabled
+            a.page-link Previous
+          li.page-item.active
+            a.page-link 1
+          li.page-item
+            a.page-link 2
+          li.page-item
+            a.page-link 3
+          li.page-item
+            a.page-link Next
+
     else
       p Nenhum resultado foi encontrado.
