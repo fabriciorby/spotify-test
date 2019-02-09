@@ -76,7 +76,7 @@ router.get('/consultaFavoritos/:tipo/:numPage', async (req, res, next) => {
       }
     }
 
-    res.render('conteudo', { list: dataList, listFavorites: idList, numPage: numPage, totalPages: totalPages});
+    res.render('conteudo', { list: dataList, listFavorites: idList, numPage: numPage, totalPages: totalPages , idNav: 'navFav'});
   } catch (err) {
     res.sendStatus(500);
     throw err;

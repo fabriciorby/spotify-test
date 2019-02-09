@@ -178,10 +178,10 @@ let SpotifyHelper = class SpotifyHelper {
         return dataInfo;
     }
 
-    async searchData(tipo, nome) {
+    async searchData(tipo, nome, offset, maxItems) {
         try {
             let dataInfo = { data: [] };
-            let data = await spotifyApi.search(nome, [tipo], { limit: 20, offset: 0 });
+            let data = await spotifyApi.search(nome, [tipo], { limit: maxItems, offset: offset });
 
             let dataBodyTipo = data.body[tipo + 's'];
             let page = dataBodyTipo.items;

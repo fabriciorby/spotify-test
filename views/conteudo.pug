@@ -54,7 +54,7 @@ section#content.container
       p Nenhum resultado foi encontrado.
     
   if list.data[0]
-    nav#navFav(aria-label='Pagination')
+    nav(id=idNav, aria-label='Pagination')
       ul.pagination.justify-content-center
         - if (numPage == 1)
           li.page-item.disabled
