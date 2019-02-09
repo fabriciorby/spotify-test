@@ -2,8 +2,8 @@
 $('#searchForm').submit(function (e) {
 
     let search = {
-        nome:$('#searchData').val(),
-        tipo:$('#searchOption').val()
+        nome: $('#searchData').val(),
+        tipo: $('#searchOption').val()
     }
     localStorage.setItem('searchParameters', JSON.stringify(search));
 
@@ -105,9 +105,8 @@ $(document).on('click', '#navBusca ul.pagination li a', function () {
     else
         page = $(obj).text();
 
-    let search = localStorage.getItem('searchParameters');
-    search = JSON.parse(search);
-    search.offset = (page-1)*20;
+    let search = JSON.parse(localStorage.getItem('searchParameters'));
+    search.offset = (page - 1) * 20;
 
     $.ajax({
         type: 'GET',
@@ -124,5 +123,18 @@ $('#home').click((e) => {
     e.preventDefault(); // avoid to execute the actual submit of the form.});
     $('#home').toggleClass('active', true);
     $('#favorites').toggleClass('active', false);
-    $('#content').html(''); // show response from the script.
+    let search = JSON.parse(localStorage.getItem('searchParameters'));
+    if (!search)
+        $('#content').html(''); // show response from the script.
+    else {
+        search.offset = 0;
+        $.ajax({
+            type: 'GET',
+            url: '/search',
+            data: $.param(search),
+            success: function (data) {
+                $('#content').replaceWith(data); // show response from the script.
+            }
+        });
+    }
 });
