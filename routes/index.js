@@ -49,9 +49,14 @@ router.get('/conteudo', async (req, res, next) => {
 
 //search for artist, album, track
 router.get('/search', async (req, res, next) => {
-  let listData = await spotifyHelper.searchData(req.query.tipo, req.query.nome);
-  let listFavorites = await dbHelper.getFavorites(userInfo.id, req.query.tipo);
-  res.render('conteudo', { list: listData, listFavorites: listFavorites });
+  const maxItems = 20; //o máximo é 50
+  let offset = !req.query.offset ? 0 : req.query.offset;
+  let numPage = offset/maxItems + 1;
+  let dataList = await spotifyHelper.searchData(req.query.tipo, req.query.nome, offset, maxItems);
+  let totalPages = Math.ceil(dataList.total/maxItems);
+  totalPages = totalPages > 10 ? 10 : totalPages;
+  let idList = await dbHelper.getFavorites(userInfo.id, req.query.tipo);
+  res.render('conteudo', { list: dataList, listFavorites: idList, numPage: numPage, totalPages: totalPages, idNav: 'navBusca'});
 });
 
 router.get('/error', function (req, res, next) {

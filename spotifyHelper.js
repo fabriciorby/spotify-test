@@ -159,98 +159,95 @@ let SpotifyHelper = class SpotifyHelper {
         switch (tipo) {
             case 'album':
                 data = await spotifyApi.getAlbums(idList);
-                data = data.body.albums;
                 break;
             case 'track':
                 data = await spotifyApi.getTracks(idList);
-                data = data.body.tracks;
                 break;
             case 'artist':
                 data = await spotifyApi.getArtists(idList);
-                data = data.body.artists;
                 break;
             default:
             // code block
         }
 
-        dataInfo = preencheDataTipo(data, dataInfo);
-        
+        let dataBodyTipo = data.body[tipo + 's'];
+
+        dataInfo = preencheDataTipo(dataBodyTipo, dataInfo, tipo);
+        dataInfo = preenchePagination(dataBodyTipo, dataInfo);
+
         return dataInfo;
     }
 
-    //tipo -> artist, track, album
-    //artist -> foto e nome
-    //album -> foto, nome, artista, tipo de album, ano
-    //track -> foto, nome, artista, tipo de album, album, ano
-    async searchData(tipo, nome) {
+    async searchData(tipo, nome, offset, maxItems) {
         try {
-            let firstPage = {};
-            let total;
             let dataInfo = { data: [] };
-            let data = await spotifyApi.search(nome, [tipo], { limit: 50, offset: 0 });
+            let data = await spotifyApi.search(nome, [tipo], { limit: maxItems, offset: offset });
 
-            switch (tipo) {
-                case 'album':
-                    firstPage = data.body.albums.items;
-                    total = data.body.albums.total;
-                    break;
-                case 'track':
-                    firstPage = data.body.tracks.items;
-                    total = data.body.tracks.total;
-                    break;
-                case 'artist':
-                    firstPage = data.body.artists.items;
-                    total = data.body.artists.total;
-                    break;
-                default:
-                // code block
-            }
+            let dataBodyTipo = data.body[tipo + 's'];
+            let page = dataBodyTipo.items;
 
-            dataInfo = preencheDataTipo(firstPage, dataInfo);
-
-            dataInfo.total = total;
+            dataInfo = preencheDataTipo(page, dataInfo, tipo);
+            dataInfo = preenchePagination(dataBodyTipo, dataInfo);
 
             return dataInfo;
         } catch (e) {
             console.log('Error while getting data info: ' + e);
         }
     }
+
 };
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function preencheDataTipo(firstPage, dataInfo) {
-    firstPage.forEach(function (data, index) {
-        dataInfo.data.push(
-            { 'id': data.id, 'name': data.name }
-        );
-        //checa para pesquisa de artista
-        if (data.followers != undefined)
-            dataInfo.tipo = 'artist';
-        if (data.images != undefined)
-            dataInfo.data[index].images = data.images[2];
-        //checa para pesquisa de álbum
-        if (data.artists != undefined) {
-            dataInfo.data[index].artist = [];
-            dataInfo.data[index].artist.push(data.artists[0].name);
-            dataInfo.tipo = 'album';
-        }
-        if (data.release_date != undefined)
-            dataInfo.data[index].release = data.release_date.substring(0, 4);
-        if (data.album_type != undefined)
-            dataInfo.data[index].album_type = capitalizeFirstLetter(data.album_type);
-        //checa para pesquisa de track
-        if (data.album != undefined) {
-            dataInfo.data[index].album = data.album.name;
-            dataInfo.data[index].release = data.album.release_date.substring(0, 4);
-            dataInfo.data[index].album_type = capitalizeFirstLetter(data.album.album_type);
-            dataInfo.data[index].images = data.album.images[2];
-            dataInfo.tipo = 'track';
-        }
-        console.log(index + ': ' + JSON.stringify(dataInfo.data[index]));
-    });
+function preencheDataTipo(page, dataInfo, tipo) {
+//tipo -> artist, track, album
+//artist -> foto e nome
+//album -> foto, nome, artista, tipo de album, ano
+//track -> foto, nome, artista, tipo de album, album, ano
+
+    dataInfo.tipo = tipo;
+
+    switch (tipo) {
+        case 'album':
+            page.forEach((data, index) => {
+                dataInfo.data.push({ 'id': data.id, 'name': data.name });
+                dataInfo.data[index].artist = data.artists.map((artist) => artist.name);
+                dataInfo.data[index].release = data.release_date.substring(0, 4);
+                dataInfo.data[index].album_type = capitalizeFirstLetter(data.album_type);
+                dataInfo.data[index].images = data.images[2];
+            });
+            break;
+        case 'track':
+            page.forEach((data, index) => {
+                dataInfo.data.push({ 'id': data.id, 'name': data.name });
+                dataInfo.data[index].album = data.album.name;
+                dataInfo.data[index].release = data.album.release_date.substring(0, 4);
+                dataInfo.data[index].album_type = capitalizeFirstLetter(data.album.album_type);
+                dataInfo.data[index].images = data.album.images[2];
+            });
+            break;
+        case 'artist':
+            page.forEach((data, index) => {
+                dataInfo.data.push({ 'id': data.id, 'name': data.name });
+                dataInfo.data[index].images = data.images[2];
+            });
+            break;
+        default:
+    }
+
+    dataInfo.data.map((item, index) => console.log(1 + index + ': ' + JSON.stringify(item)));
+
+    return dataInfo;
+}
+
+function preenchePagination(dataBodyTipo, dataInfo) {
+    dataInfo.total = dataBodyTipo.total;
+    dataInfo.offset = dataBodyTipo.offset;
+    dataInfo.previous = dataBodyTipo.previous;
+    dataInfo.next = dataBodyTipo.next;
+    dataInfo.limit = dataBodyTipo.limit;
     return dataInfo;
 }
 

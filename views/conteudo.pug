@@ -1,6 +1,6 @@
 section#content.container
   div.table-responsive
-    if list
+    if list.data[0]
       - var aux = list.data
       table.table.table-hover.table-sm(id=list.tipo)
         thead
@@ -49,5 +49,29 @@ section#content.container
                 td.align-middle= item.album_type
               if item.release
                 td.align-middle= item.release
+
     else
       p Nenhum resultado foi encontrado.
+    
+  if list.data[0]
+    nav(id=idNav, aria-label='Pagination')
+      ul.pagination.justify-content-center
+        - if (numPage == 1)
+          li.page-item.disabled
+            a.page-link Previous
+        - else
+          li.page-item
+            a.page-link Previous
+        - for (let x = 1; x <= totalPages; x++)
+          - if (numPage == x)
+            li.page-item.active
+              a.page-link= x
+          - else
+            li.page-item
+              a.page-link= x
+        - if (numPage == totalPages)
+          li.page-item.disabled
+            a.page-link Next
+        - else
+          li.page-item
+            a.page-link Next

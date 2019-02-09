@@ -53,22 +53,30 @@ router.post('/removeFavorito/:tipo/:dataId', async (req, res, next) => {
 
 });
 
-router.get('/consultaFavoritos/:tipo', async (req, res, next) => {
+router.get('/consultaFavoritos/:tipo/:numPage', async (req, res, next) => {
 
-  let tipo = req.params.tipo;
-  let userId = req.app.locals.userInfo.id;
+  const tipo = req.params.tipo;
+  const userId = req.app.locals.userInfo.id;
+  const maxItems = 20; //20 é o valor máximo
+  const numPage = req.params.numPage;
   let idList;
-  let dataList;
+  let dataList = { data: [] };
+  let totalPages = 0;
 
   try {
     idList = await dbHelper.getFavorites(userId, tipo);
+
+    console.log(idList);
+
     if (idList.length) {
-      dataList = await spotifyHelper.getInfosByIdList(tipo, idList);
-      if (!dataList)
-        res.sendStatus(403);
+      totalPages = Math.ceil(idList.length/maxItems);
+      if (numPage <= totalPages) {
+        idList = idList.splice((numPage - 1) * maxItems, maxItems);
+        dataList = await spotifyHelper.getInfosByIdList(tipo, idList);
+      }
     }
 
-    res.render('conteudo', { list: dataList, listFavorites: idList });
+    res.render('conteudo', { list: dataList, listFavorites: idList, numPage: numPage, totalPages: totalPages , idNav: 'navFav'});
   } catch (err) {
     res.sendStatus(500);
     throw err;
